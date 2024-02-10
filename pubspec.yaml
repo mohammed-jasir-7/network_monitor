@@ -1,7 +1,6 @@
 name: network_monitor
 description: A Flutter plugin that allows you to check the network connectivity and listen for changes. This plugin works for Android. .
 version: 1.0.0
-author: mohammed jasir<jasirm203@gmail.com>
 homepage: https://github.com/mohammed-jasir-7/network_monitor.git
 
 environment:
