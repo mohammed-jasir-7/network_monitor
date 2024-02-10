@@ -16,7 +16,7 @@ class MethodChannelNetworkMonitor extends NetworkMonitorPlatform {
   @override
   Future<bool?> isOnline() async {
     final version = await methodChannel.invokeMethod<bool>('isOnline');
-    await methodChannel.invokeMethod<bool>("turnOnData");
+
     return version;
   }
 
@@ -25,10 +25,8 @@ class MethodChannelNetworkMonitor extends NetworkMonitorPlatform {
     await methodChannel.invokeMethod<bool>('onChange');
 
     var mapStream = eventChannel.receiveBroadcastStream().map((event) {
-      log(event["status"]);
-      return NetworkStatus(status: event["status"]);
+      return NetworkStatus(status: event["status"], type: event['type']);
     });
-  
 
     return mapStream;
   }

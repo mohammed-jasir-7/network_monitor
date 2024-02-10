@@ -48,33 +48,7 @@ public   boolean  isOnline(){
      NetworkInfo ni = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
      boolean mobileDataEnabled = ni.isConnectedOrConnecting();
      // If mobile data is not enabled, show a dialog to the user
-     if (!mobileDataEnabled) {
-         // Create an alert dialog builder
-         AlertDialog.Builder builder = new AlertDialog.Builder(context.getApplicationContext());
 
-         // Set the message, title, and buttons
-         builder.setMessage("You need mobile data for this app. Please turn on mobile data in Settings.")
-                 .setTitle("Mobile Data Required")
-                 .setCancelable(false)
-                 .setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-                     public void onClick(DialogInterface dialog, int id) {
-                         // Open the system settings screen for mobile data
-                         Intent intent = new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS);
-                         context.startActivity(intent);
-                     }
-                 })
-                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                     public void onClick(DialogInterface dialog, int id) {
-                         // Close the dialog and the app
-                         dialog.cancel();
-
-                     }
-                 });
-
-         // Create and show the dialog
-         AlertDialog alert = builder.create();
-         alert.show();
-     }
 
 
  }
@@ -93,10 +67,23 @@ public   boolean  isOnline(){
              @Override
              public void onAvailable(@NonNull Network network) {
                  super.onAvailable(network);
-
+                 String type="";
+                 NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
                  if(eventSink!=null){
-                     Map<String,String> data= Collections.singletonMap("status", "available");
+                     if (activeNetwork != null) {
+                         if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                             type = "Wifi";
+
+                         } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE ) {
+                             type = "mobile";
+
+                         }
+                     }
+                     Map<String, String> data = new HashMap<>();
+                     data.put("status", "available");
+                     data.put("type", type);
                      uiThreadHandler.post(() ->eventSink.success( data) );
+
                  }
              }
 
